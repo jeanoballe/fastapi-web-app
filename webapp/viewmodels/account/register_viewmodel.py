@@ -1,6 +1,8 @@
-from webapp.viewmodels.shared.viewmodel import ViewModelBase
-from starlette.requests import Request
 from typing import Optional
+from starlette.requests import Request
+
+from webapp.viewmodels.shared.viewmodel import ViewModelBase
+from webapp.services import user_service
 
 
 class RegisterViewModel(ViewModelBase):
@@ -24,3 +26,6 @@ class RegisterViewModel(ViewModelBase):
 
         if not self.email or not self.email.strip():
             self.error = "Your email is required."
+
+        elif await user_service.get_user_by_email(self.email):
+            self.error = "That email is already taken. Log in instead?"

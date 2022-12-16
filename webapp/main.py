@@ -11,7 +11,7 @@ from webapp.data import db_session
 from webapp.bin import load_data
 
 
-app = fastapi.FastAPI()
+app = fastapi.FastAPI(docs_url=None, redoc_url=None)
 
 
 def main():
