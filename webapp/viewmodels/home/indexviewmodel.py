@@ -12,4 +12,4 @@ class IndexViewModel(ViewModelBase):
         self.release_count: int = package_service.release_count()
         self.user_count: int = user_service.user_count()
         self.package_count: int = package_service.package_count()
-        self.packages: List = package_service.latest_releases()
+        self.packages: List = package_service.latest_packages(limit=7)

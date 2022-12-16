@@ -2,3 +2,6 @@ fastapi
 uvicorn
 fastapi_chameleon
 python-multipart
+sqlalchemy
+progressbar2
+python-dateutil

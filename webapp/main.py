@@ -1,3 +1,4 @@
+from pathlib import Path
 import fastapi
 import uvicorn
 import fastapi_chameleon
@@ -6,21 +7,33 @@ from starlette.staticfiles import StaticFiles
 from webapp.views import account
 from webapp.views import home
 from webapp.views import packages
+from webapp.data import db_session
+from webapp.bin import load_data
 
 
 app = fastapi.FastAPI()
 
 
 def main():
-    configure()
+    configure(dev_mode=True)
     uvicorn.run(app, host='127.0.0.1', port=8080)
 
-def configure():
-    configure_templates()
-    configure_routes()
 
-def configure_templates():
+def configure(dev_mode: bool):
+    configure_templates(dev_mode)
+    configure_routes()
+    configure_db(dev_mode)
+    # load_data.main()
+
+
+def configure_db(dev_mode: bool):
+    file = (Path(__file__).parent / 'db' / 'pypi.sqlite').absolute()
+    db_session.global_init(file.as_posix())
+
+
+def configure_templates(dev_mode: bool):
     fastapi_chameleon.global_init('webapp/templates/')
+
 
 def configure_routes():
     app.mount('/static', StaticFiles(directory='webapp/static'), name='static')
@@ -28,12 +41,8 @@ def configure_routes():
     app.include_router(account.router)
     app.include_router(packages.router)
 
-def configure():
-    configure_templates()
-    configure_routes()
-
 
 if __name__ == '__main__':
     main()
 else:
-    configure()
+    configure(dev_mode=False)
