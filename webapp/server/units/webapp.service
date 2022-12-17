@@ -1,0 +1,24 @@
+[Unit]
+Description=gunicorn uvicorn service for WebAPP Service
+After=syslog.target
+
+[Service]
+ExecStart=/apps/venv/bin/gunicorn -b 127.0.0.1:8000 -w 4 -k uvicorn.workers.UvicornWorker webapp.main:app --name webapp_svc --chdir /apps/fastapi-web-app --access-logfile /apps/logs/fastapi-web-app/access.log --error-logfile /apps/logs/fastapi-web-app/errors.log --user apiuser
+
+# \/ \/ <- Added post recording for better restart perf.
+ExecReload=/bin/kill -s HUP $MAINPID
+KillMode=mixed
+TimeoutStopSec=5
+PrivateTmp=true
+# /\ /\ <- Added post recording for better restart perf.
+
+# Requires systemd version 211 or newer
+RuntimeDirectory=/apps/fastapi-web-app
+Restart=always
+Type=notify
+StandardError=syslog
+NotifyAccess=all
+
+
+[Install]
+WantedBy=multi-user.target
